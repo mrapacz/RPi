@@ -29,8 +29,10 @@ class Client:
             MAC = mac_file.readline().rstrip()
         stream = subprocess.Popen("arp -an", shell=True, stdout=subprocess.PIPE).stdout.read().decode()
         pattern = re.compile(r'\((\d+\.\d+\.\d+\.\d+)\) at ' + MAC)
-        return re.search(pattern, stream).groups()[0]
-
+    
+        ip = re.search(pattern, stream).groups()[0]
+        print(ip)
+        return ip
 
 if __name__ == '__main__':
     client = Client()

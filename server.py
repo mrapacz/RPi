@@ -1,11 +1,13 @@
 import socket
 from threading import Thread
+
+import subprocess
+from time import sleep
+
 import utils
 
-HOST = [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in
-        [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
-print(HOST)
 PORT = 8002
+MAX_FAIL_COUNT = 60
 
 
 def respond_to_client(client_socket, address):
@@ -25,7 +27,21 @@ def respond_to_client(client_socket, address):
         "Client disconnected"
 
 
+def get_host_ip():
+    ip = None
+    fail_count = 0
+    while ip is None and fail_count < MAX_FAIL_COUNT:
+        ip = subprocess.Popen("hostname -I", shell=True, stdout=subprocess.PIPE).stdout.read().decode().rstrip()
+        fail_count += 1
+        sleep(1)
+    if ip is None:
+        raise ConnectionError("No internet connection")
+    return ip
+
+
 if __name__ == '__main__':
+    HOST = get_host_ip()
+
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
