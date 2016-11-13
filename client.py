@@ -1,9 +1,7 @@
 import socket
 from time import sleep
 
-import subprocess
-
-import re
+from client_utils import get_rpi_ip
 
 PORT = 8002
 
@@ -16,30 +14,26 @@ class Client:
 
     def connect(self, ADDR=None):
         if ADDR is None:
-            ADDR = (self.get_rpi_ip(), PORT)
+            ADDR = (get_rpi_ip(), PORT)
         self.client_socket.connect(ADDR)
 
     def get_temperature(self):
         self.client_socket.send(b'get_temperature')
-        print('Server sent:', self.client_socket.recv(1024).decode())
+        return self.client_socket.recv(1024).decode()
 
-    @staticmethod
-    def get_rpi_ip():
-        with open("rpi_mac.txt") as mac_file:
-            MAC = mac_file.readline().rstrip()
-        stream = subprocess.Popen("arp -an", shell=True, stdout=subprocess.PIPE).stdout.read().decode()
-        pattern = re.compile(r'\((\d+\.\d+\.\d+\.\d+)\) at ' + MAC)
-    
-        ip = re.search(pattern, stream).groups()[0]
-        print(ip)
-        return ip
 
 if __name__ == '__main__':
     client = Client()
+    undefined = '85000'
     try:
-        for _ in range(10):
-            client.get_temperature()
+        temperature = undefined
+        while temperature == undefined:
+            temperature = client.get_temperature()
             sleep(1)
+
+        # -*- coding: utf-8 -*-
+        print("Current temperature is " + str(float(temperature) / 1000) + "°C")
+
     except KeyboardInterrupt:
         client.client_socket.shutdown(socket.SHUT_RDWR)
         print("Shutdown")
