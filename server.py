@@ -26,7 +26,7 @@ def respond_to_client(client_socket, address):
 
 if __name__ == '__main__':
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+    server_socket.setsockopt(socket.SO_REUSEADDR)
     server_socket.bind((HOST, PORT))
     server_socket.listen(5)
 
