@@ -8,8 +8,17 @@ LOCATION = '/sys/bus/w1/devices/28-8000001ea518/'
 FILENAME = 'w1_slave'
 
 
+def trigger_measuring(filepath):
+    """Used to trigger temperature measuring in sensor module"""
+    with open(filepath):
+        pass
+
+
 def get_temperature():
-    with open(os.path.join(LOCATION, FILENAME)) as file:
+    filepath = os.path.join(LOCATION, FILENAME)
+
+    trigger_measuring(filepath)
+    with open(filepath) as file:
         file.readline()
         line = file.readline()
         pattern = re.compile('t=(\d+)')

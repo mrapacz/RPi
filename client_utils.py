@@ -5,7 +5,7 @@ import subprocess
 
 def get_ip_from_arptable(MAC):
     stream = subprocess.Popen('ip neighbour show', shell=True, stdout=subprocess.PIPE).stdout.read().decode()
-    pattern = re.compile(r'(\d+\.\d+\.\d+\.\d+) dev wlp3s0 lladdr ' + MAC)
+    pattern = re.compile(r'(\d+\.\d+\.\d+\.\d+) .+? ' + MAC)
 
     result = re.search(pattern, stream)
     if result is not None:
