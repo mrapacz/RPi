@@ -13,7 +13,8 @@ def respond_to_client(client_socket, address):
         client_socket.send(str.encode("Accepted connection from {}".format(address)))
         while True:
             message = client_socket.recv(1024).decode()
-
+            if len(message) == 0:
+                break
             print('Client sent:', message)
             if message in utils.orders:
                 response = str.encode(utils.orders[message]())
@@ -26,7 +27,7 @@ def respond_to_client(client_socket, address):
 
 if __name__ == '__main__':
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setsockopt(socket.SO_REUSEADDR)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
     server_socket.listen(5)
 
