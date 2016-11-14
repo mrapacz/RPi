@@ -9,7 +9,9 @@ class ServerSocket(socket.socket):
     def __init__(self):
         super(ServerSocket, self).__init__(socket.AF_INET, socket.SOCK_STREAM)
         self.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.setup_socket()
 
+    def setup_socket(self):
         HOST = server_utils.get_host_ip()
         self.bind((HOST, PORT))
         self.listen(5)
@@ -32,10 +34,12 @@ class ServerSocket(socket.socket):
                     break
                 print('Client sent:', message)
                 if message in server_utils.orders:
-                    response = str.encode(server_utils.orders[message]())
-                    client_socket.send(response)
+                    response = server_utils.orders[message]()
                 else:
-                    client_socket.send(b"Unrecognized command")
+                    response = "Unrecognized command"
+                encoded_response = str.encode(response)
+                client_socket.send(encoded_response)
+
         except BrokenPipeError:
             "Client disconnected"
 

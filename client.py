@@ -24,12 +24,9 @@ class Client:
 
 if __name__ == '__main__':
     client = Client()
-    undefined = '85000'
     try:
-        temperature = undefined
-        while temperature == undefined:
-            temperature = client.get_temperature()
-            sleep(1)
+        temperature = client.get_temperature()
+        sleep(1)
 
         # -*- coding: utf-8 -*-
         print("Current temperature is " + str(float(temperature) / 1000) + "°C")

@@ -9,20 +9,26 @@ FILENAME = 'w1_slave'
 
 
 def trigger_measuring(filepath):
-    """Used to trigger temperature measuring in sensor module"""
+    """Triggers temperature measuring in sensor module"""
     with open(filepath):
         pass
 
 
 def get_temperature():
+    """Returns current temperature value assuming 85000 means error"""
     filepath = os.path.join(LOCATION, FILENAME)
 
     trigger_measuring(filepath)
-    with open(filepath) as file:
-        file.readline()
-        line = file.readline()
-        pattern = re.compile('t=(\d+)')
-        temperature = re.search(pattern, line).groups()[0]
+    temperature = None
+
+    while temperature is None:
+        with open(filepath) as file:
+            file.readline()
+            line = file.readline()
+            pattern = re.compile('t=(\d+)')
+            noted_value = re.search(pattern, line).groups()[0]
+        if noted_value != '85000':
+            temperature = noted_value
     return temperature
 
 
