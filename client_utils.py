@@ -1,6 +1,7 @@
 import re
 
 import subprocess
+from time import sleep
 
 
 def get_ip_from_arptable(MAC):
@@ -22,7 +23,7 @@ def get_mac_address(filename='rpi_mac.txt'):
 
 def ping_neighbours():
     devnull = open('/dev/null', 'w')
-    subprocess.Popen('nmap -sn 192.168.1.101-110', shell=True, stdout=devnull).wait(timeout=5)
+    subprocess.Popen('nmap -sn 192.168.1.100-110', shell=True, stdout=devnull).wait(timeout=5)
     return
 
 
@@ -32,6 +33,7 @@ def get_rpi_ip():
 
     while ip is None:
         print("IP for the given MAC address not found, pinging neighbours...")
+        sleep(1)
         ping_neighbours()
         ip = get_ip_from_arptable(MAC)
 
