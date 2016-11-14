@@ -10,8 +10,8 @@ FILENAME = 'w1_slave'
 
 def trigger_measuring(filepath):
     """Triggers temperature measuring in sensor module"""
-    with open(filepath):
-        pass
+    open(filepath).close()
+    sleep(1)
 
 
 def get_temperature():
