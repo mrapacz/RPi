@@ -18,7 +18,7 @@ class ServerSocket(socket.socket):
 
     def listen_to_clients(self):
         while True:
-            client_socket, address = server_socket.accept()
+            client_socket, address = self.accept()
             print("Received connection from ", address)
 
             thread = Thread(target=self.respond_to_client, args=(client_socket, address))

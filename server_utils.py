@@ -29,6 +29,8 @@ def get_temperature():
             noted_value = re.search(pattern, line).groups()[0]
         if noted_value != '85000':
             temperature = noted_value
+        else:
+            sleep(1)
     return temperature
 
 
