@@ -10,8 +10,8 @@ FILENAME = 'w1_slave'
 
 def trigger_measuring(filepath):
     """Triggers temperature measuring in sensor module"""
-    open(filepath).close()
-    sleep(1)
+    with open(filepath) as file:
+        file.read()
 
 
 def get_temperature():
@@ -27,10 +27,10 @@ def get_temperature():
             line = file.readline()
             pattern = re.compile('t=(\d+)')
             noted_value = re.search(pattern, line).groups()[0]
+
         if noted_value != '85000':
             temperature = noted_value
-        else:
-            sleep(1)
+
     return temperature
 
 
@@ -46,6 +46,7 @@ def get_host_ip(max_fail_count=60):
         ip = subprocess.Popen("hostname -I", shell=True, stdout=subprocess.PIPE).stdout.read().decode().rstrip()
         fail_count += 1
         sleep(1)
+
     if ip is None:
         raise ConnectionError("No internet connection")
     return ip
